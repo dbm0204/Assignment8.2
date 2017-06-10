@@ -1,20 +1,14 @@
 package com.example.dbm0204.assignment93;
-
 import java.util.ArrayList;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
-import android.content.Context;
 
 public class MainActivity extends Activity {
     private static ArrayList<Item> items;
@@ -54,9 +48,12 @@ public class MainActivity extends Activity {
     public boolean onContextItemSelected(MenuItem item){
         if(item.getTitle()=="CALL"){
             Toast.makeText(getApplicationContext(),"Calling Code",Toast.LENGTH_LONG).show();
+            //TODO: Intent to place phone call
         }
         else if(item.getTitle()=="SMS"){
             Toast.makeText(getApplicationContext(), "Sending SMS Code",Toast.LENGTH_LONG).show();
+            //TODO:Intent to send an SMS
+
         } else {
             return false;
         }
