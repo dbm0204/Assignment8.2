@@ -2,7 +2,9 @@ package com.example.dbm0204.assignment93;
 
 import java.util.ArrayList;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,13 +28,11 @@ public class MainActivity extends Activity {
         ListView listView = (ListView) findViewById(R.id.listview);
         // 3. setListAdapter
         listView.setAdapter(adapter);
+
         listView.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent,
                                     View view, int position, long id) {
-
-                //TODO:Create context Menu
-
 
                 Item clickedObj = (Item) parent.getItemAtPosition(position);
                 Toast.makeText(MainActivity.this,
@@ -41,6 +41,26 @@ public class MainActivity extends Activity {
                                 clickedObj.getName(),
                         Toast.LENGTH_LONG).show();
             }});
+        registerForContextMenu(listView);
+    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu,View v, ContextMenu.ContextMenuInfo menuInfo){
+        super.onCreateContextMenu(menu,v,menuInfo);
+        menu.setHeaderTitle("Select an Action");
+        menu.add(0,v.getId(),0,"CALL");
+        menu.add(0,v.getId(),0, "SMS");
+    }
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+        if(item.getTitle()=="CALL"){
+            Toast.makeText(getApplicationContext(),"Calling Code",Toast.LENGTH_LONG).show();
+        }
+        else if(item.getTitle()=="SMS"){
+            Toast.makeText(getApplicationContext(), "Sending SMS Code",Toast.LENGTH_LONG).show();
+        } else {
+            return false;
+        }
+        return true;
     }
     private ArrayList<Item> generateData(){
         items = new ArrayList<Item>();
