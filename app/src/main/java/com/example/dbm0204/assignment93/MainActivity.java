@@ -1,5 +1,10 @@
 package com.example.dbm0204.assignment93;
 import java.util.ArrayList;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -9,20 +14,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.app.Activity;
-
 public class MainActivity extends Activity {
     private static ArrayList<Item> items;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // 1. pass context and data to the custom adapter
         MyAdapter adapter = new MyAdapter(this, generateData());
-        // 2. Get ListView from activity_main.xml
         ListView listView = (ListView) findViewById(R.id.listview);
-        // 3. setListAdapter
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent,
@@ -46,19 +46,37 @@ public class MainActivity extends Activity {
     }
     @Override
     public boolean onContextItemSelected(MenuItem item){
+        ArrayList<Item> list =generateData();
         if(item.getTitle()=="CALL"){
             Toast.makeText(getApplicationContext(),"Calling Code",Toast.LENGTH_LONG).show();
-            //TODO: Intent to place phone call
+            PackageManager pm = getApplicationContext().getPackageManager();
+            int haspm = pm.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,getApplicationContext().getPackageName());
+            if(haspm!=PackageManager.PERMISSION_GRANTED) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + "000000000"));
+                startActivity(callIntent);
+            }
         }
         else if(item.getTitle()=="SMS"){
-            Toast.makeText(getApplicationContext(), "Sending SMS Code",Toast.LENGTH_LONG).show();
-            //TODO:Intent to send an SMS
-
-        } else {
+            try {
+                Toast.makeText(getApplicationContext(),"Calling Code",Toast.LENGTH_LONG).show();
+                PackageManager pm = getApplicationContext().getPackageManager();
+                int haspm = pm.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,getApplicationContext().getPackageName());
+                if(haspm!=PackageManager.PERMISSION_GRANTED) {
+                    Uri uri = Uri.parse("smsto:" + "000000000");
+                    Intent smsIntent = new Intent(Intent.ACTION_SENDTO, uri);
+                    smsIntent.putExtra("sms_body", "SMS application launches from ___ example");
+                    startActivity(smsIntent);
+                    }
+                } catch (Exception e){
+                Toast.makeText(this,"SMS failed please try again later!",Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                }
             return false;
-        }
+            }
         return true;
     }
+
     private ArrayList<Item> generateData(){
         items = new ArrayList<Item>();
         items.add(new Item("Ben Mathew","00000000"));
